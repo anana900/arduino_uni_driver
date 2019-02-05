@@ -12,16 +12,8 @@ void menu_program_01_update(Program &program);
 TS_Point getPoint24()
 {
   TS_Point tmpP, p = ts.getPoint();
-  //p.x = map(p.x, 0, 3800, 0, tft.height());
-  //p.y = map(p.y, 0, 4000,  tft.width(), 0);
   p.y = map(p.y, 220, 3880, tft.height(), 0);
   p.x = map(p.x, 200, 3650, tft.width(), 0);
-  //tmpP.x=p.x;
-  //p.x = p.y;
-  //p.y = tmpP.x;
-  Serial.print(p.x);
-  Serial.print(" ");
-  Serial.println(p.y);
   return p;
 }
 
@@ -74,7 +66,7 @@ void menu_program_02_print(int selection = 0)
       printButton(170, 210, 30, 30, 0x07FF, "5", 170, 235, 2, BACKGROUND_COLOR_B, true);
       printButton(210, 210, 30, 30, 0x07FF, "6", 210, 235, 2, BACKGROUND_COLOR_B, true);
       printButton(250, 210, 30, 30, 0x07FF, "7", 250, 235, 2, BACKGROUND_COLOR_B, true);
-      printButton(290, 210, 30, 30, ILI9341_GREEN, TXT_OK, 290, 230, 1, BACKGROUND_COLOR_B, true);      
+      printButton(290, 210, 30, 30, GREEN_COLOR, TXT_OK, 290, 230, 1, BACKGROUND_COLOR_B, true);      
       break;
     case 1:
       tft.fillRect(0, 0, tft.width(), 209, BACKGROUND_COLOR_B);
@@ -384,7 +376,6 @@ void menu_program_01_update(Program &program)
     delay(150);
   }
   delay(150);
-  Serial.println("KONIEC menu_program_01_update");
 } // void menu_program_01_update(Program &program)
 
 void menu_program_00_print()
@@ -421,7 +412,6 @@ void menu_program_00_print()
       printButton(2*(tft.width()/3), y_position, tft.width()/3, 40, BACKGROUND_COLOR_B, "Stop", 2*(tft.width()/3)+20, y_position+25, 2, RED_COLOR, true);
     }
   }
-  //menu_program_00_update();
 }  // void menu_program_00_print(Program &program)
 
 void menu_program_00_update()
@@ -456,7 +446,6 @@ void menu_program_00_update()
       else if(action.x < 2*(tft.width()/3)) 
       {
         menu_program_01_print(program_list[item]);
-  //      break;
       }
       else if(action.x > 2*(tft.width()/3)) 
       {
@@ -486,17 +475,9 @@ void menu_program_00_update()
           } else {
             printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 20, 1, TEXT_COLOR_W, true);
           }
-          Serial.print("Program 1: ");Serial.println(program_list[0].get_program_status());
-          Serial.print("Program 2: ");Serial.println(program_list[1].get_program_status());
-          Serial.print("Program 3: ");Serial.println(program_list[2].get_program_status());
-          Serial.print("Program 4: ");Serial.println(program_list[3].get_program_status());
-    //      break;
         }
       } else if(action.x > 85 && action.y < 85){
         // noop
-    //    break;
       }
- //   }
-//  }
 delay(500);
 }  //  void menu_program_00_update(Program &program)

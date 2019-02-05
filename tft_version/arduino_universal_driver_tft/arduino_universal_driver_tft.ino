@@ -61,5 +61,4 @@ void loop()
     soundClic();
     menu_program_00_update();
   }
-  Serial.print("program size: ");Serial.println(sizeof(program_list[0]));
 }

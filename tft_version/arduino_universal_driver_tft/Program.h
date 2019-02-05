@@ -64,15 +64,10 @@ int Program::program_counter = 1;
 
 void Program::execute_program()
 {
- // unsigned long timer_sum = 0;
-  unsigned long working_time_start = millis();
-//  unsigned long common_timer = millis();
-  // unsigned long wait_time = 0;
-  // initiate here counters  
+  unsigned long working_time_start = millis(); 
   while(program_status)
   {
     if(stop_program(millis()-working_time_start)) break;
-   // common_timer = millis();
     state port_value = none;
     for(int i = 0 ; i < CONDITION_SIZE ; i++)
     {
