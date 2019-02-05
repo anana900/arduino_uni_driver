@@ -188,7 +188,7 @@ void menu_program_01_print_conditions(Program &program){
 void menu_program_01_print(Program &program)
 {
   tft.fillScreen(BACKGROUND_COLOR_B);
-
+  read_config(program_list);
   menu_program_01_print_buttons(program);
   menu_program_01_print_conditions(program);
   menu_program_01_update(program);
@@ -200,7 +200,7 @@ void menu_program_01_update(Program &program)
   {
     if(ts.touched())
     {
-  
+  soundClic();
   TS_Point action = getPoint24();
   int item = -1;
   if(action.y > 40 && action.y < 60 && item == -1)
@@ -375,6 +375,7 @@ void menu_program_01_update(Program &program)
   else if(action.x > 2*(tft.width()/3) && action.y > 200)
   {
     // save to eeprom
+    save_config(program_list);
     // go to main menu
     menu_program_00_print();
     break;
@@ -404,9 +405,9 @@ void menu_program_00_print()
   printButton(86, 0, 2*(tft.width()/3), 30, BACKGROUND_COLOR_B, "Program:", 90, 20, 1, TEXT_COLOR_W, true);
   printButton(86, 26, 2*(tft.width()/3), 30, BACKGROUND_COLOR_B, "Status:", 90, 46, 1, TEXT_COLOR_W, true);
   printButton(86, 52, 2*(tft.width()/3), 30, BACKGROUND_COLOR_B, "Czas Pracy:", 90, 72, 1, TEXT_COLOR_W, true);
-  printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, "----------", 200, 20, 1, TEXT_COLOR_W, true);
-  printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, "----------", 200, 46, 1, TEXT_COLOR_W, true);
-  printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, "----------", 200, 72, 1, TEXT_COLOR_W, true);
+  printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 20, 1, TEXT_COLOR_W, true);
+  printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 46, 1, TEXT_COLOR_W, true);
+  printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 72, 1, TEXT_COLOR_W, true);
   for(int item = 0 ; item < PROGRAMS_NUMBER ; item++)
   {
     int y_position = 40*(item+1)+50;
@@ -425,6 +426,7 @@ void menu_program_00_print()
 
 void menu_program_00_update()
 {
+  soundClic();
       TS_Point action = getPoint24();
       int item = -1;
       if(action.y > 80 && action.y < 120 && item == -1)
@@ -482,7 +484,7 @@ void menu_program_00_update()
           if(true == program_list[item].get_program_status()){
             printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, program_list[item].program_name, 200, 20, 1, TEXT_COLOR_W, true);
           } else {
-            printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, "----------", 200, 20, 1, TEXT_COLOR_W, true);
+            printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 20, 1, TEXT_COLOR_W, true);
           }
           Serial.print("Program 1: ");Serial.println(program_list[0].get_program_status());
           Serial.print("Program 2: ");Serial.println(program_list[1].get_program_status());

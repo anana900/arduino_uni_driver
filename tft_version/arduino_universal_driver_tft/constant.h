@@ -8,6 +8,7 @@ const byte PROGRAMS_NUMBER = 4;
 const byte ALPHABET[25] = {'_','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T','U','W','X','Y','Z'};
 const int EEPROM_ELEMENT_SIZE = 143;
 String sstate[] = {"0", "100", "200", "300", "-", "A", "OFF", "ON", "Error"};
+const String DA______SH = "----------";
 
 #define SOUND 2
 #define STMPE_CS 8 // CS Touch SPI

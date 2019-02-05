@@ -2,12 +2,8 @@
 #include "constant.h"
 #include "Program.h"
 Program* program_list = new Program[PROGRAMS_NUMBER];
-#include "tft.h"
 #include "eeprom.h"
-
-void printButton(int x, int y, int width, int height, uint16_t buttonColor, String text = "", int tx = 0, int ty = 0, int textSize = 1, uint16_t textColor = TEXT_COLOR_W, boolean customf = false);
-
-TS_Point getPoint24();
+#include "tft.h"
 
 bool Program::stop_program(unsigned long working_time)
 {
@@ -16,8 +12,8 @@ bool Program::stop_program(unsigned long working_time)
     if (action.y > 85 && action.x > 2*(tft.width()/3))
     {
     Program::update_wy(off, off);
-    printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, "----------", 200, 46, 1, TEXT_COLOR_W, true);
-    printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, "----------", 200, 72, 1, TEXT_COLOR_W, true);
+    printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 46, 1, TEXT_COLOR_W, true);
+    printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 72, 1, TEXT_COLOR_W, true);
     return true;
     }
   } else {
@@ -26,9 +22,6 @@ bool Program::stop_program(unsigned long working_time)
   }
   return false;
 }
-
-void save_to_eeprom(){}
-void read_from_eeprom(){}
 
 void setup() 
 {
@@ -47,9 +40,14 @@ void setup()
   pinMode(LCD_LIGHT, OUTPUT);
   digitalWrite(SOUND, 0); //zmienilem na 1 z 0
   analogWrite(LCD_LIGHT, 255);
-  analogReference(INTERNAL);
+  //analogReference(INTERNAL);
   ///////////////////
-  // read eeprom here 
+
+  /*
+   * This function is run only once when saving configuration into the EEPROM.
+   * save_config(program_list);
+  */
+  read_config(program_list);
   menu_program_00_print();
 }
 
@@ -60,6 +58,7 @@ void loop()
   }
 
   if (ts.touched()) {
+    soundClic();
     menu_program_00_update();
   }
   Serial.print("program size: ");Serial.println(sizeof(program_list[0]));
