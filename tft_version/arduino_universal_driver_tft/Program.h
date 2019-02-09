@@ -90,7 +90,7 @@ void Program::execute_program()
             condition_list[i].timer_actual = millis();
           }
           Program::update_wy(condition_list[i].get_wy1(), condition_list[i].get_wy2());
-          while(true == condition_list[i].timer_lock && millis()/10 - condition_list[i].timer_actual/10 <= (unsigned long)(condition_list[i].get_timeout()*10)){
+          while(true == condition_list[i].timer_lock && millis()/100 - condition_list[i].timer_actual/100 <= (condition_list[i].get_timeout()*10)){
             if(stop_program(millis()- working_time_start)) break;
           }
           condition_list[i].timer_lock = false;
