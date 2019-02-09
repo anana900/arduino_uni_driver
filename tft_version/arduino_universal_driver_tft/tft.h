@@ -8,6 +8,7 @@ XPT2046_Touchscreen ts(STMPE_CS);
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 void menu_program_00_print();
 void menu_program_01_update(Program &program);
+void menu_program_02_update();
 
 TS_Point getPoint24()
 {
@@ -50,109 +51,10 @@ void soundClic(int timer = 10)
   }
 }
 
-void menu_program_02_print(int selection = 0)
-{
-  TS_Point action;
-  prepareText(1, 20, 1, TEXT_COLOR_W, true);
-  switch(selection)
-  {
-    case 0:
-      tft.fillScreen(BACKGROUND_COLOR_B);
-      tft.println("Menu 1");
-      printButton(10, 210, 30, 30, 0x07FF, "1", 10, 235, 2, BACKGROUND_COLOR_B, true);
-      printButton(50, 210, 30, 30, 0x07FF, "2", 50, 235, 2, BACKGROUND_COLOR_B, true);
-      printButton(90, 210, 30, 30, 0x07FF, "3", 90, 235, 2, BACKGROUND_COLOR_B, true);
-      printButton(130, 210, 30, 30, 0x07FF, "4", 130, 235, 2, BACKGROUND_COLOR_B, true);
-      printButton(170, 210, 30, 30, 0x07FF, "5", 170, 235, 2, BACKGROUND_COLOR_B, true);
-      printButton(210, 210, 30, 30, 0x07FF, "6", 210, 235, 2, BACKGROUND_COLOR_B, true);
-      printButton(250, 210, 30, 30, 0x07FF, "7", 250, 235, 2, BACKGROUND_COLOR_B, true);
-      printButton(290, 210, 30, 30, GREEN_COLOR, TXT_OK, 290, 230, 1, BACKGROUND_COLOR_B, true);      
-      break;
-    case 1:
-      tft.fillRect(0, 0, tft.width(), 209, BACKGROUND_COLOR_B);
-      tft.println("Menu 1");
-      break;
-    case 2:
-      tft.fillRect(0, 0, tft.width(), 209, BACKGROUND_COLOR_B);
-      tft.println("Menu 2");
-      break;
-    case 3:
-      tft.fillRect(0, 0, tft.width(), 209, BACKGROUND_COLOR_B);
-      tft.println("Menu 3");
-      break;
-    case 4:
-      tft.fillRect(0, 0, tft.width(), 209, BACKGROUND_COLOR_B);
-      tft.println("Menu 4");
-      break;
-    case 5:
-      tft.fillRect(0, 0, tft.width(), 209, BACKGROUND_COLOR_B);
-      tft.println("Menu 5");
-      break;
-    case 6:
-      tft.fillRect(0, 0, tft.width(), 209, BACKGROUND_COLOR_B);
-      tft.println("Menu 6");
-      break;
-    case 7:
-      tft.fillRect(0, 0, tft.width(), 209, BACKGROUND_COLOR_B);
-      tft.println("Menu 7");
-      break;
-    default:
-    break;
-  }
-
-  while(true)
-  {
-    if (ts.touched()) 
-    {
-      action = getPoint24();
-      if (action.y > 210 && action.x < (tft.width()/8)*1)
-      {
-        menu_program_02_print(1);
-        break;
-      } 
-      else if (action.y > 210 && action.x > (tft.width()/8)*1 && action.x < (tft.width()/8)*2)
-      {
-        menu_program_02_print(2);
-        break;
-      } 
-      else if (action.y > 210 && action.x > (tft.width()/8)*2 && action.x < (tft.width()/8)*3)
-      {
-        menu_program_02_print(3);
-        break;
-      } 
-      else if (action.y > 210 && action.x > (tft.width()/8)*3 && action.x < (tft.width()/8)*4)
-      {
-        menu_program_02_print(4);
-        break;
-      } 
-      else if (action.y > 210 && action.x > (tft.width()/8)*4 && action.x < (tft.width()/8)*5)
-      {
-        menu_program_02_print(5);
-        break;
-      } 
-      else if (action.y > 210 && action.x > (tft.width()/8)*5 && action.x < (tft.width()/8)*6)
-      {
-        menu_program_02_print(6);
-        break;
-      } 
-      else if (action.y > 210 && action.x > (tft.width()/8)*6 && action.x < (tft.width()/8)*7)
-      {
-        menu_program_02_print(7);
-        break;
-      } 
-      else if (action.y > 210 && action.x > (tft.width()/8)*7)
-      {
-        menu_program_00_print();
-        break;
-      }
-    }
-  } 
-} // void menu_program_02_print(int selection = 0)
-
 void menu_program_01_print_buttons(Program &program){
   printButton(0, 0, 30, 30, TEXT_COLOR_W, "W", 7, 15, 1, BACKGROUND_COLOR_B, true);
   printButton(30, 0, 30, 30, 0x07FF, "S", 37, 21, 1, BACKGROUND_COLOR_B, true);
-  printButton(60, 0, 60, 30, 0xF000, "TStop", 65, 21, 1, TEXT_COLOR_W, true);
+  printButton(60, 0, 60, 30, 0xF000, "Timer", 65, 21, 1, TEXT_COLOR_W, true);
   printButton(120, 0, 55, 30, 0xEEE0, "P1", 127, 21, 1, BACKGROUND_COLOR_B, true);
   printButton(175, 0, 55, 30, 0xEEE0, "P2", 182, 21, 1, BACKGROUND_COLOR_B, true);
   printButton(230, 0, 45, 30, 0x0B62, "W1", 237, 21, 1, TEXT_COLOR_W, true);
@@ -227,20 +129,43 @@ void menu_program_01_update(Program &program)
       } // if
     printButton(30, 40*(item+1), 30, 30, BACKGROUND_COLOR_B, String(sstate[program.condition_list[item].get_condition_status()]), 37, 40*(item+1)+18, 1, TEXT_COLOR_W, true);
     } 
-    else if(action.x > 65 && action.x < 115)
+    else if(action.x > 65 && action.x < 85)
+    {
+      unsigned current_timeout = program.condition_list[item].get_timeout();
+      if(0 == current_timeout) 
+      {
+        program.condition_list[item].set_timeout(600);
+      } 
+      else if(600 >= current_timeout && 60 < current_timeout)
+      {
+        timeout = current_timeout - 10;
+        program.condition_list[item].set_timeout(timeout);
+      } 
+      else if(60 >= current_timeout && 30 < current_timeout)
+      {
+        timeout = current_timeout - 2;
+        program.condition_list[item].set_timeout(timeout);
+      } 
+      else 
+      {
+        timeout = current_timeout - 1;
+        program.condition_list[item].set_timeout(timeout);
+      } // if
+    printButton(60, 40*(item+1), 60, 30, BACKGROUND_COLOR_B, String(program.condition_list[item].get_timeout()), 70, 40*(item+1)+18, 1, TEXT_COLOR_W, true);
+    }
+    else if(action.x > 85 && action.x < 115)
     {
       unsigned current_timeout = program.condition_list[item].get_timeout();
       if(600 <= current_timeout) 
       {
         program.condition_list[item].set_timeout(0);
-        delay(1000);
       } 
-      else if(600 > current_timeout && 60 < current_timeout)
+      else if(600 >= current_timeout && 60 <= current_timeout)
       {
-        timeout = current_timeout + 30;
+        timeout = current_timeout + 10;
         program.condition_list[item].set_timeout(timeout);
       } 
-      else if(60 > current_timeout && 30 < current_timeout)
+      else if(60 >= current_timeout && 30 <= current_timeout)
       {
         timeout = current_timeout + 2;
         program.condition_list[item].set_timeout(timeout);
@@ -402,7 +327,7 @@ void menu_program_00_print()
   for(int item = 0 ; item < PROGRAMS_NUMBER ; item++)
   {
     int y_position = 40*(item+1)+50;
-    printButton(0, y_position, 2*(tft.width()/3), 40, BACKGROUND_COLOR_B, program_list[item].program_name, 5, y_position+18, 1, TEXT_COLOR_W, true);
+    printButton(0, y_position, 2*(tft.width()/3), 40, BACKGROUND_COLOR_B, program_name[item], 5, y_position+18, 1, TEXT_COLOR_W, true);
     if(false == program_list[item].get_program_status())
     {
       printButton(2*(tft.width()/3), y_position, tft.width()/3, 40, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
@@ -471,7 +396,7 @@ void menu_program_00_update()
           }
         
           if(true == program_list[item].get_program_status()){
-            printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, program_list[item].program_name, 200, 20, 1, TEXT_COLOR_W, true);
+            printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, program_name[item], 200, 20, 1, TEXT_COLOR_W, true);
           } else {
             printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 20, 1, TEXT_COLOR_W, true);
           }
@@ -481,3 +406,21 @@ void menu_program_00_update()
       }
 delay(500);
 }  //  void menu_program_00_update(Program &program)
+
+bool Program::stop_program(unsigned long working_time)
+{
+  if(ts.touched()){
+    TS_Point action = getPoint24();
+    if (action.y >= 85 && action.x >= 2*(tft.width()/3))
+    {
+    Program::update_wy(off, off);
+    printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 46, 1, TEXT_COLOR_W, true);
+    printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 72, 1, TEXT_COLOR_W, true);
+    return true;
+    }
+  } else {
+    printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, "W1: "+String(digitalRead(OUT1))+" W2: "+String(digitalRead(OUT2)), 200, 46, 1, TEXT_COLOR_W, true);
+    printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, String(working_time/1000)+" s", 200, 72, 1, TEXT_COLOR_W, true);
+    return false;
+  }
+}

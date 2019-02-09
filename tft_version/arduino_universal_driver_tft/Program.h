@@ -7,11 +7,12 @@ class Condition
   state wy1;
   state wy2;
   unsigned int timer;
+  
   public:
-  bool timer_lock = false;
-  unsigned long timer_actual;
   Condition() : condition_status(none), p1(none), p2(none), wy1(none), wy2(none), timer(0){}
   ~Condition(){}
+  bool timer_lock = false;
+  unsigned long timer_actual;
   state get_condition_status(){return condition_status;}
   state get_p1(){return p1;}
   state get_p2(){return p2;}
@@ -40,17 +41,11 @@ void Condition::reset_condition()
 class Program
 {
   private:
-  static int program_counter;
-  //char program_name[PROGRAM_NAME_LENGTH];
   bool program_status;
+  
   public:
-  Program()
-  {
-    program_status = false;
-    program_name.concat(program_counter);
-    program_counter++;
-  }
-  String program_name = "PROGRAM ";
+  Program() : program_status(false){}
+  ~Program(){};
   Condition condition_list[CONDITION_SIZE];
   void execute_program();
   bool stop_program(unsigned long working_time);
@@ -59,8 +54,6 @@ class Program
   bool get_program_status(){return program_status;}
   void set_program_status(bool set_status){program_status = set_status;}
 };
-
-int Program::program_counter = 1;
 
 void Program::execute_program()
 {
@@ -97,8 +90,8 @@ void Program::execute_program()
             condition_list[i].timer_actual = millis();
           }
           Program::update_wy(condition_list[i].get_wy1(), condition_list[i].get_wy2());
-          while(true == condition_list[i].timer_lock && millis() - condition_list[i].timer_actual <= (condition_list[i].get_timeout()*1000)){
-            if(stop_program(millis()-working_time_start)) break;
+          while(true == condition_list[i].timer_lock && millis()/10 - condition_list[i].timer_actual/10 <= (unsigned long)(condition_list[i].get_timeout()*10)){
+            if(stop_program(millis()- working_time_start)) break;
           }
           condition_list[i].timer_lock = false;
         }
