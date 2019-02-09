@@ -421,6 +421,6 @@ bool Program::stop_program(unsigned long working_time)
   } else {
     printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, "W1: "+String(digitalRead(OUT1))+" W2: "+String(digitalRead(OUT2)), 200, 46, 1, TEXT_COLOR_W, true);
     printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, String(working_time/1000)+" s", 200, 72, 1, TEXT_COLOR_W, true);
-    return false;
   }
+  return false;
 }
