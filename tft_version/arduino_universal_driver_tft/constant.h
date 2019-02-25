@@ -27,7 +27,6 @@ const byte PROGRAM_NAME_LENGTH = 10;
 const byte CONDITION_SIZE = 8;
 const byte PROGRAMS_NUMBER = 4;
 String program_name[PROGRAMS_NUMBER] = {"PROGRAM 1", "PROGRAM 2", "PROGRAM 3", "PROGRAM 4"};
-const byte ALPHABET[25] = {'_','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T','U','W','X','Y','Z'};
 const int EEPROM_ELEMENT_SIZE = 143;
 const String DA______SH = "----------";
 
@@ -40,7 +39,7 @@ enum state
     off = 6,
     on = 7,
     error = 8,
-    ok = 9,
+//    ok = 9,
     zero = 0,
     one = 1,
     two = 2,

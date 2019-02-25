@@ -52,6 +52,7 @@ void soundClic(int timer = 10)
 }
 
 void menu_program_01_print_buttons(Program &program){
+  prepareText(1, 1, 1, TEXT_COLOR_W, false); // THIS LINE IS NECESSARY TO AVOID FORNT SHITFING
   printButton(0, 0, 30, 30, TEXT_COLOR_W, "W", 7, 15, 1, BACKGROUND_COLOR_B, true);
   printButton(30, 0, 30, 30, 0x07FF, "S", 37, 21, 1, BACKGROUND_COLOR_B, true);
   printButton(60, 0, 60, 30, 0xF000, "Timer", 65, 21, 1, TEXT_COLOR_W, true);
@@ -263,6 +264,7 @@ void menu_program_01_update(Program &program)
   {
     printButton(0, 200, tft.width()/2, 40, BACKGROUND_COLOR_B, "ANULUJ", 10, 230, 1, 0xF000, true);
     printButton(tft.width()/2, 200, tft.width()/2, 40, BACKGROUND_COLOR_B, "POTWIERDZ KASUJ", (tft.width()/2), 230, 1, 0xF000, true);
+    delay(500);
     while(1){
       if(ts.touched())
       {
@@ -326,15 +328,15 @@ void menu_program_00_print()
   printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 72, 1, TEXT_COLOR_W, true);
   for(int item = 0 ; item < PROGRAMS_NUMBER ; item++)
   {
-    int y_position = 40*(item+1)+50;
-    printButton(0, y_position, 2*(tft.width()/3), 40, BACKGROUND_COLOR_B, program_name[item], 5, y_position+18, 1, TEXT_COLOR_W, true);
+    int y_position = 35*(item+1)+60;
+    printButton(0, y_position, 2*(tft.width()/3), 30, BACKGROUND_COLOR_B, program_name[item], 5, y_position+18, 1, TEXT_COLOR_W, true);
     if(false == program_list[item].get_program_status())
     {
-      printButton(2*(tft.width()/3), y_position, tft.width()/3, 40, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
+      printButton(2*(tft.width()/3), y_position, tft.width()/3, 30, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
     }
     else
     {
-      printButton(2*(tft.width()/3), y_position, tft.width()/3, 40, BACKGROUND_COLOR_B, "Stop", 2*(tft.width()/3)+20, y_position+25, 2, RED_COLOR, true);
+      printButton(2*(tft.width()/3), y_position, tft.width()/3, 30, BACKGROUND_COLOR_B, "Stop", 2*(tft.width()/3)+20, y_position+25, 2, RED_COLOR, true);
     }
   }
 }  // void menu_program_00_print(Program &program)
@@ -370,27 +372,30 @@ void menu_program_00_update()
       }
       else if(action.x < 2*(tft.width()/3)) 
       {
+        int y_position = 35*(item+1)+60;
+        printButton(0, y_position, 2*(tft.width()/3), 30, GREEN_COLOR, program_name[item], 5, y_position+18, 1, BACKGROUND_COLOR_B, true);
+        delay(500);
         menu_program_01_print(program_list[item]);
       }
       else if(action.x > 2*(tft.width()/3)) 
       {
         if(item >= 0){
           for(int i=0 ;i < 4 ; i++){
-            int y_position = 40*(i+1)+50;
+            int y_position = 35*(i+1)+60;
             if(item != i){
               if(true == program_list[i].get_program_status()){
                 program_list[i].set_program_status(false);
-                printButton(2*(tft.width()/3), y_position, tft.width()/3, 40, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
+                printButton(2*(tft.width()/3), y_position, tft.width()/3, 35, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
               } else {
                 // noop
               }
             } else {
               if(true == program_list[i].get_program_status()){
                 program_list[i].set_program_status(false);
-                printButton(2*(tft.width()/3), y_position, tft.width()/3, 40, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
+                printButton(2*(tft.width()/3), y_position, tft.width()/3, 35, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
               } else {
                 program_list[i].set_program_status(true);
-                printButton(2*(tft.width()/3), y_position, tft.width()/3, 40, BACKGROUND_COLOR_B, "Stop", 2*(tft.width()/3)+20, y_position+25, 2, RED_COLOR, true);
+                printButton(2*(tft.width()/3), y_position, tft.width()/3, 35, BACKGROUND_COLOR_B, "Stop", 2*(tft.width()/3)+20, y_position+25, 2, RED_COLOR, true);
               }
             }
           }
@@ -404,7 +409,7 @@ void menu_program_00_update()
       } else if(action.x > 85 && action.y < 85){
         // noop
       }
-delay(500);
+      delay(500);
 }  //  void menu_program_00_update(Program &program)
 
 bool Program::stop_program(unsigned long working_time)
