@@ -14,36 +14,33 @@ void setup()
     soundClic(5000);
     delay(5000);
     Serial.println("Couldn't start touchscreen controller");
-    //while (1);
   }
 
-  ///////TMP SETTINGS FOR DEVELOPMENT BOARD BEGIN//////////
   tft.setRotation(3);
   pinMode(SOUND, OUTPUT);
-  pinMode(6, OUTPUT);  // relay
-  pinMode(LCD_LIGHT, OUTPUT);
-  digitalWrite(SOUND, 0); //zmienilem na 1 z 0
-  analogWrite(LCD_LIGHT, 255);
-  //analogReference(INTERNAL);
-  ///////TMP SETTINGS FOR DEVELOPMENT BOARD END//////////
+  pinMode(OUT1, OUTPUT);  // relay
+  pinMode(OUT2, OUTPUT);  // relay
+  digitalWrite(OUT1, HIGH);  // relay
+  digitalWrite(OUT2, HIGH);  // relay
 
   /*
-   * This function is run only once when saving configuration into the EEPROM.
+   * This function is run only once when uploading the program very first time.
    * save_config(program_list);
   */
 
-//save_config(program_list);
   read_config(program_list);
-  menu_program_00_print();
+  menu_program_00_print();  
 }
 
 void loop() 
 {
-  for(int i=0 ; i < PROGRAMS_NUMBER ; i++){
+  for(int i=0 ; i < PROGRAMS_NUMBER ; i++)
+  {
       program_list[i].execute_program();
   }
 
-  if (ts.touched()) {
+  if (ts.touched())
+  {
     soundClic();
     menu_program_00_update();
   }

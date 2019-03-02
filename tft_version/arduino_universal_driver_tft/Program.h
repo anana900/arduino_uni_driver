@@ -130,11 +130,11 @@ void Program::update_wy(state wy1, state wy2)
   {
      if(off == wy1)
      {
-      digitalWrite(OUT1, LOW);
+      digitalWrite(OUT1, HIGH);
      }
      else if(on == wy1 ) 
      {
-      digitalWrite(OUT1, HIGH);
+      digitalWrite(OUT1, LOW);
      }
      else 
      {
@@ -145,11 +145,11 @@ void Program::update_wy(state wy1, state wy2)
   {
      if(off == wy2)
      {
-      digitalWrite(OUT2, LOW);
+      digitalWrite(OUT2, HIGH);
      } 
      else if(on == wy2 ) 
      {
-      digitalWrite(OUT2, HIGH);
+      digitalWrite(OUT2, LOW);
      } 
      else 
      {
