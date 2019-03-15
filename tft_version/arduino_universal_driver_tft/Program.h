@@ -48,7 +48,7 @@ class Program
   ~Program(){};
   Condition condition_list[CONDITION_SIZE];
   void execute_program();
-  bool stop_program(unsigned long working_time);
+  bool stop_program(unsigned long working_time, bool force_stop = false);
   state analog_port_convert(int);
   void update_wy(state p1, state p2);
   bool get_program_status(){return program_status;}
@@ -57,7 +57,10 @@ class Program
 
 void Program::execute_program()
 {
-  unsigned long working_time_start = millis(); 
+  unsigned long working_time_start = millis();
+  unsigned long turn_off_time_start = millis();
+  state last_change_p1 = none;
+  state last_change_p2 = none;
   while(program_status)
   {
     if(stop_program(millis()-working_time_start)) break;
@@ -66,7 +69,6 @@ void Program::execute_program()
     {
       if(active == condition_list[i].get_condition_status())
       {
-        
         if(none != condition_list[i].get_p1())
         {
           port_value = Program::analog_port_convert(analogRead(PORT1));
@@ -75,6 +77,7 @@ void Program::execute_program()
             Program::update_wy(condition_list[i].get_wy1(), condition_list[i].get_wy2());
           }
         }
+        
         if(none != condition_list[i].get_p2())
         {
           port_value = Program::analog_port_convert(analogRead(PORT2));
@@ -83,14 +86,36 @@ void Program::execute_program()
             Program::update_wy(condition_list[i].get_wy1(), condition_list[i].get_wy2());
           }
         }
+
+        if(0 != condition_list[i].get_timeout() && (none != condition_list[i].get_p1() || none != condition_list[i].get_p2()))
+        {
+          state analog_port1 = Program::analog_port_convert(analogRead(PORT1));
+          state analog_port2 = Program::analog_port_convert(analogRead(PORT2));
+          if(last_change_p1 != analog_port1 || last_change_p2 != analog_port2)
+          {
+            last_change_p1 = analog_port1;
+            last_change_p2 = analog_port2;
+            turn_off_time_start = millis();
+          }
+
+          if(millis()/100 - turn_off_time_start/100 >= (condition_list[i].get_timeout()*10))
+          {
+            set_program_status(false);
+            stop_program(millis()- working_time_start, true);
+            break;
+          }
+        }
+
         if(0 != condition_list[i].get_timeout() && none == condition_list[i].get_p1() && none == condition_list[i].get_p2())
         {
-          if(false == condition_list[i].timer_lock){
+          if(false == condition_list[i].timer_lock)
+          {
             condition_list[i].timer_lock = true;
             condition_list[i].timer_actual = millis();
           }
           Program::update_wy(condition_list[i].get_wy1(), condition_list[i].get_wy2());
-          while(true == condition_list[i].timer_lock && millis()/100 - condition_list[i].timer_actual/100 <= (condition_list[i].get_timeout()*10)){
+          while(true == condition_list[i].timer_lock && millis()/100 - condition_list[i].timer_actual/100 <= (condition_list[i].get_timeout()*10))
+          {
             if(stop_program(millis()- working_time_start)) break;
           }
           condition_list[i].timer_lock = false;

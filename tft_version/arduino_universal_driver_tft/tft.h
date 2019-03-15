@@ -267,14 +267,18 @@ void menu_program_01_update(Program &program)
     printButton(0, 200, tft.width()/2, 40, BACKGROUND_COLOR_B, "ANULUJ", 10, 230, 1, 0xF000, true);
     printButton(tft.width()/2, 200, tft.width()/2, 40, BACKGROUND_COLOR_B, "POTWIERDZ KASUJ", (tft.width()/2), 230, 1, 0xF000, true);
     delay(500);
-    while(1){
+    while(1)
+    {
       if(ts.touched())
       {
         action = getPoint24();
-        if(action.x < tft.width()/2 && action.y > 200){            
+        if(action.x < tft.width()/2 && action.y > 200)
+        {            
           menu_program_01_print_buttons(program);
           break;
-        } else if(action.x > tft.width()/2 && action.y > 200){
+        } 
+        else if(action.x > tft.width()/2 && action.y > 200)
+        {
           for(int item = 0 ; item < CONDITION_SIZE ; item++)
           {
             program.condition_list[item].reset_condition();
@@ -346,86 +350,109 @@ void menu_program_00_print()
 void menu_program_00_update()
 {
   soundClic();
-      TS_Point action = getPoint24();
-      int item = -1;
-      if(action.y > 80 && action.y < 120 && item == -1)
-      {
-          item = 0;
-      } 
-      else if(action.y > 120 && action.y < 160 && item == -1)
-      {
-          item = 1;
-      } 
-      else if(action.y > 160 && action.y < 200 && item == -1)
-      {
-          item = 2;
-      } 
-      else if(action.y > 200 && action.y < 240 && item == -1)
-      {
-          item = 3;
-      } // if
+  TS_Point action = getPoint24();
+  int item = -1;
+  if(action.y > 80 && action.y < 120 && item == -1)
+  {
+      item = 0;
+  } 
+  else if(action.y > 120 && action.y < 160 && item == -1)
+  {
+      item = 1;
+  } 
+  else if(action.y > 160 && action.y < 200 && item == -1)
+  {
+      item = 2;
+  } 
+  else if(action.y > 200 && action.y < 240 && item == -1)
+  {
+      item = 3;
+  } // if
       
-      if(action.x < 85 && action.y < 85)
+  if(action.x < 85 && action.y < 85)
+  {
+   // noop
+  }
+  else if(action.x >= 85 && action.y < 85) 
+  {
+    // noop
+  }
+  else if(action.x < 2*(tft.width()/3)) 
+  {
+    int y_position = 35*(item+1)+60;
+    printButton(0, y_position, 2*(tft.width()/3), 30, GREEN_COLOR, program_name[item], 5, y_position+18, 1, BACKGROUND_COLOR_B, true);
+    delay(500);
+    menu_program_01_print(program_list[item]);
+  }
+  else if(action.x > 2*(tft.width()/3)) 
+  {
+    if(item >= 0){
+      for(int i=0 ;i < 4 ; i++)
       {
-        // noop
-      }else if(action.x >= 85 && action.y < 85) 
-      {
-        // noop
-      }
-      else if(action.x < 2*(tft.width()/3)) 
-      {
-        int y_position = 35*(item+1)+60;
-        printButton(0, y_position, 2*(tft.width()/3), 30, GREEN_COLOR, program_name[item], 5, y_position+18, 1, BACKGROUND_COLOR_B, true);
-        delay(500);
-        menu_program_01_print(program_list[item]);
-      }
-      else if(action.x > 2*(tft.width()/3)) 
-      {
-        if(item >= 0){
-          for(int i=0 ;i < 4 ; i++){
-            int y_position = 35*(i+1)+60;
-            if(item != i){
-              if(true == program_list[i].get_program_status()){
-                program_list[i].set_program_status(false);
-                printButton(2*(tft.width()/3), y_position, tft.width()/3, 35, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
-              } else {
-                // noop
-              }
-            } else {
-              if(true == program_list[i].get_program_status()){
-                program_list[i].set_program_status(false);
-                printButton(2*(tft.width()/3), y_position, tft.width()/3, 35, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
-              } else {
-                program_list[i].set_program_status(true);
-                printButton(2*(tft.width()/3), y_position, tft.width()/3, 35, BACKGROUND_COLOR_B, "Stop", 2*(tft.width()/3)+20, y_position+25, 2, RED_COLOR, true);
-              }
-            }
+        int y_position = 35*(i+1)+60;
+        if(item != i)
+        {
+          if(true == program_list[i].get_program_status())
+          {
+            program_list[i].set_program_status(false);
+            printButton(2*(tft.width()/3), y_position, tft.width()/3, 35, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
+          } 
+          else 
+          {
+            // noop
           }
-        
-          if(true == program_list[item].get_program_status()){
-            printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, program_name[item], 200, 20, 1, TEXT_COLOR_W, true);
-          } else {
-            printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 20, 1, TEXT_COLOR_W, true);
+        } 
+        else 
+        {
+          if(true == program_list[i].get_program_status())
+          {
+            program_list[i].set_program_status(false);
+            printButton(2*(tft.width()/3), y_position, tft.width()/3, 35, BACKGROUND_COLOR_B, "Start", 2*(tft.width()/3)+20, y_position+25, 2, GREEN_COLOR, true);
+          } 
+          else 
+          {
+            program_list[i].set_program_status(true);
+            printButton(2*(tft.width()/3), y_position, tft.width()/3, 35, BACKGROUND_COLOR_B, "Stop", 2*(tft.width()/3)+20, y_position+25, 2, RED_COLOR, true);
           }
         }
-      } else if(action.x > 85 && action.y < 85){
-        // noop
       }
-      delay(500);
+
+      if(true == program_list[item].get_program_status())
+      {
+        printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, program_name[item], 200, 20, 1, TEXT_COLOR_W, true);
+      } 
+      else 
+      {
+        printButton(200, 0, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 20, 1, TEXT_COLOR_W, true);
+      }
+    }
+  } 
+  else if(action.x > 85 && action.y < 85)
+  {
+    // noop
+  }
+  delay(500);
 }  //  void menu_program_00_update(Program &program)
 
-bool Program::stop_program(unsigned long working_time)
+bool Program::stop_program(unsigned long working_time, bool force_stop = false)
 {
-  if(ts.touched()){
+  if(ts.touched() || force_stop)
+  {
     TS_Point action = getPoint24();
-    if (action.y >= 85 && action.x >= 2*(tft.width()/3))
+    if ((action.y >= 85 && action.x >= 2*(tft.width()/3)) || force_stop)
     {
     Program::update_wy(off, off);
     printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 46, 1, TEXT_COLOR_W, true);
     printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 72, 1, TEXT_COLOR_W, true);
+    if(force_stop)
+    {
+      menu_program_00_print();
+    }
     return true;
     }
-  } else {
+  }
+  else 
+  {
     printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, "W1: "+String(!digitalRead(OUT1))+" W2: "+String(!digitalRead(OUT2)), 200, 46, 1, TEXT_COLOR_W, true);
     printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, String(working_time/1000)+" s", 200, 72, 1, TEXT_COLOR_W, true);
   }
