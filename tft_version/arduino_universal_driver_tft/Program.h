@@ -9,10 +9,11 @@ class Condition
   unsigned int timer;
   
   public:
-  Condition() : condition_status(none), p1(none), p2(none), wy1(none), wy2(none), timer(0){}
+  Condition() : condition_status(none), p1(none), p2(none), wy1(none), wy2(none), timer(0) {}
   ~Condition(){}
   bool timer_lock = false;
   unsigned long timer_actual;
+  unsigned long turn_off_time_start;
   state get_condition_status(){return condition_status;}
   state get_p1(){return p1;}
   state get_p2(){return p2;}
@@ -58,56 +59,87 @@ class Program
 void Program::execute_program()
 {
   unsigned long working_time_start = millis();
-  unsigned long turn_off_time_start = millis();
-  state last_change_p1 = none;
-  state last_change_p2 = none;
+  state port_value_p1 = none;
+  state port_value_p2 = none;
+  bool prepare_timers = true;
+  
   while(program_status)
   {
+    /*
+     * Stop the program by clicking on STOP button.
+     */
     if(stop_program(millis()-working_time_start)) break;
-    state port_value = none;
+    
+    if(prepare_timers)
+    {
+      for(int i = 0 ; i < CONDITION_SIZE ; i++)
+      {
+        condition_list[i].turn_off_time_start = millis();
+      }
+      prepare_timers = false;
+    }
+    
     for(int i = 0 ; i < CONDITION_SIZE ; i++)
     {
       if(active == condition_list[i].get_condition_status())
       {
-        if(none != condition_list[i].get_p1())
+        port_value_p1 = Program::analog_port_convert(analogRead(PORT1));
+        port_value_p2 = Program::analog_port_convert(analogRead(PORT2));
+
+        /*
+         * Mode1. Drive the output only if port 1 is active.
+         */
+        if(none != condition_list[i].get_p1() && none == condition_list[i].get_p2())
         {
-          port_value = Program::analog_port_convert(analogRead(PORT1));
-          if(port_value == condition_list[i].get_p1())
+          //Serial.println("Port 1");
+          if(port_value_p1 == condition_list[i].get_p1())
           {
             Program::update_wy(condition_list[i].get_wy1(), condition_list[i].get_wy2());
           }
+          else 
+          {
+            condition_list[i].turn_off_time_start = millis();
+          }
         }
-        
-        if(none != condition_list[i].get_p2())
+
+        /*
+         * Mode1. Drive the output only if port 2 is active.
+         */
+        if(none != condition_list[i].get_p2() && none == condition_list[i].get_p1())
         {
-          port_value = Program::analog_port_convert(analogRead(PORT2));
-          if(port_value == condition_list[i].get_p2())
+          //Serial.println("Port 2");
+          if(port_value_p2 == condition_list[i].get_p2())
           {
             Program::update_wy(condition_list[i].get_wy1(), condition_list[i].get_wy2());
           }
+          else 
+          {
+            condition_list[i].turn_off_time_start = millis();
+          }
         }
 
-        if(0 != condition_list[i].get_timeout() && (none != condition_list[i].get_p1() || none != condition_list[i].get_p2()))
+        /*
+         * Mode1. Drive the output only if port 1 and port 2 are active.
+         */
+        if(none != condition_list[i].get_p1() && none != condition_list[i].get_p2())
         {
-          state analog_port1 = Program::analog_port_convert(analogRead(PORT1));
-          state analog_port2 = Program::analog_port_convert(analogRead(PORT2));
-          if(last_change_p1 != analog_port1 || last_change_p2 != analog_port2)
+          //Serial.println("Port 1 oraz Port 2");
+          if(port_value_p1 == condition_list[i].get_p1() && port_value_p2 == condition_list[i].get_p2())
           {
-            last_change_p1 = analog_port1;
-            last_change_p2 = analog_port2;
-            turn_off_time_start = millis();
+            Program::update_wy(condition_list[i].get_wy1(), condition_list[i].get_wy2());
           }
-
-          if(millis()/100 - turn_off_time_start/100 >= (condition_list[i].get_timeout()*10))
+          else 
           {
-            set_program_status(false);
-            stop_program(millis()- working_time_start, true);
-            break;
+            condition_list[i].turn_off_time_start = millis();
           }
         }
 
+        /*
+         * Mode2. Drive the output based only on timer. Ports are disabled and not reading.
+         */
         if(0 != condition_list[i].get_timeout() && none == condition_list[i].get_p1() && none == condition_list[i].get_p2())
         {
+          //Serial.println("Czasowka");
           if(false == condition_list[i].timer_lock)
           {
             condition_list[i].timer_lock = true;
@@ -116,9 +148,29 @@ void Program::execute_program()
           Program::update_wy(condition_list[i].get_wy1(), condition_list[i].get_wy2());
           while(true == condition_list[i].timer_lock && millis()/100 - condition_list[i].timer_actual/100 <= (condition_list[i].get_timeout()*10))
           {
+            /*
+             * Stop the program by clicking on STOP button.
+             */
             if(stop_program(millis()- working_time_start)) break;
           }
           condition_list[i].timer_lock = false;
+        }
+
+        /*
+         * Mode3. Run like Mode1 and additionaly set time guards for every instruction separatelly.
+         */
+        if(0 != condition_list[i].get_timeout() && (none != condition_list[i].get_p1() || none != condition_list[i].get_p2()))
+        {
+          //Serial.println("Czasowka i Port 1 oraz Port 2");
+          if(millis()/100 - condition_list[i].turn_off_time_start/100 >= (condition_list[i].get_timeout()*10))
+          {
+            set_program_status(false);
+            /*
+             * Stop the program by force parameter (timeout).
+             */
+            stop_program(millis()- working_time_start, true);
+            break;
+          }
         }
       }
     }

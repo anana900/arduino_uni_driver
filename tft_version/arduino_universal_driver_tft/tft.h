@@ -441,13 +441,13 @@ bool Program::stop_program(unsigned long working_time, bool force_stop = false)
     TS_Point action = getPoint24();
     if ((action.y >= 85 && action.x >= 2*(tft.width()/3)) || force_stop)
     {
-    Program::update_wy(off, off);
-    printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 46, 1, TEXT_COLOR_W, true);
-    printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 72, 1, TEXT_COLOR_W, true);
-    if(force_stop)
-    {
-      menu_program_00_print();
-    }
+      Program::update_wy(off, off);
+      printButton(200, 26, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 46, 1, TEXT_COLOR_W, true);
+      printButton(200, 52, (tft.width()/3)+15, 30, BACKGROUND_COLOR_B, DA______SH, 200, 72, 1, TEXT_COLOR_W, true);
+      if(force_stop)
+      {
+        menu_program_00_print();
+      }
     return true;
     }
   }
