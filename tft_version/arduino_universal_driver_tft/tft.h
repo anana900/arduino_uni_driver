@@ -17,6 +17,7 @@ TS_Point getPoint24()
   p.y = map(p.y, 220, 3880, tft.height(), 0);
   //p.x = map(p.x, 200, 3650, tft.width(), 0);
   p.x = map(p.x, 200, 4000, 0, tft.width());
+ // Serial.print(p.z);Serial.print(" ");Serial.print(p.x);Serial.print(" ");Serial.println(p.y);
   return p;
 }
 
