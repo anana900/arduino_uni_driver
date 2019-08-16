@@ -179,25 +179,26 @@ void Program::execute_program()
 
 state Program::analog_port_convert(int value)
 {
-  if(value < 50)
+  Serial.println(value);
+  if(value < 20)
   {
-    return zero;
+    return error; 
   } 
-  else if(value > 300 && value < 400)
+  else if(value > 20 && value < 150)
   {
     return one;
   } 
-  else if (value > 500 && value < 600)
-  {
-    return two;
-  } 
-  else if (value > 700 && value < 800)
+  else if (value > 150 && value < 280)
   {
     return three;
   } 
-  else if(value > 1020) 
+  else if (value > 280 && value < 500)
   {
-   return error; 
+    return zero;
+  } 
+  else if(value > 500) 
+  {
+   return two; 
   }
 }
 
