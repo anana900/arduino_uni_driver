@@ -179,26 +179,37 @@ void Program::execute_program()
 
 state Program::analog_port_convert(int value)
 {
-  Serial.println(value);
-  if(value < 20)
+//czarny sam   one
+//1         0v
+//0         1v      190-205
+//bialy sam    two
+//1       0v
+//0       2v         408
+//czarny bialy
+//0       0           2.67v        548
+//1       0            1.77v       361
+//0       1            0.45v       90
+//1       1             0v         0
+  //Serial.println(value);
+  if(value <= 70)
   {
-    return error; 
+    return three; 
   } 
-  else if(value > 20 && value < 150)
+  else if(value > 70 && value <= 160)
   {
     return one;
   } 
-  else if (value > 150 && value < 280)
+  else if (value > 160 && value <= 400)
   {
-    return three;
+    return two;
   } 
-  else if (value > 280 && value < 500)
+  else if (value > 400 && value <= 600)
   {
     return zero;
   } 
-  else if(value > 500) 
+  else if(value > 600) 
   {
-   return two; 
+   return error; 
   }
 }
 

@@ -30,7 +30,7 @@ const int EEPROM_ELEMENT_SIZE = 143;
 const String DA______SH = "----------";
 
 // enum state is corelated with sstate array of strings
-const String sstate[] = {"0", "C", "B", "CB", "-", "A", "OFF", "ON", "Error"};
+const String sstate[] = {"0", "B", "C", "CB", "-", "A", "OFF", "ON", "Error"};
 enum state
 {
     none = 4,
