@@ -179,34 +179,45 @@ void Program::execute_program()
 
 state Program::analog_port_convert(int value)
 {
-//czarny sam   one
-//1         0v
-//0         1v      190-205
-//bialy sam    two
-//1       0v
-//0       2v         408
-//czarny bialy
-//0       0           2.67v        548
-//1       0            1.77v       361
-//0       1            0.45v       90
-//1       1             0v         0
+//|   C     B     voltage    digital |
+//|----------------------------------|
+//|   0     -     1v         200     |
+//|   1     -     0v         0       |
+//|   -     0     2v         400     |
+//|   -     1     0v         0       |
+//|   0     0     2.67v      550     |
+//|   1     0     1.77v      360     |
+//|   0     1     0.45v      90      |
+//|   1     1     0v         0       |
+//|----------------------------------|
+
   //Serial.println(value);
   if(value <= 70)
   {
     return three; 
   } 
-  else if(value > 70 && value <= 160)
+  else if(value > 70 && value <= 140)
   {
     return one;
   } 
-  else if (value > 160 && value <= 400)
+  else if ((value > 140 && value <= 180) ||
+           (value > 220 && value <= 340))
   {
     return two;
   } 
-  else if (value > 400 && value <= 600)
+  else if ((value > 340 && value <= 380) ||
+           (value > 420 && value <= 600))
   {
     return zero;
-  } 
+  }
+  else if (value > 180 && value <= 220)
+  {
+    return one;
+  }
+  else if (value > 380 && value <= 420)
+  {
+    return two;
+  }
   else if(value > 600) 
   {
    return error; 
